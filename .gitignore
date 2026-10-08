@@ -1,0 +1,8 @@
+# Live business data - never push this to GitHub
+data/*
+!data/.htaccess
+!data/.gitkeep
+*.sqlite
+*.sqlite-journal
+*.log
+.claude/
