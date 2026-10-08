@@ -8,6 +8,7 @@
   var custId = null;
   var payTouched = false;
   var saving = false;
+  var saveKey = null, saveFp = '';      // one-time key of the bill being saved (kept while a save is being retried)
 
   function t(k, v) { return I18N.t(k, v); }
   function S() { return Store.s; }
@@ -20,14 +21,10 @@
       return '<button type="button" data-dir="' + d.id + '" class="' + (d.id === dir ? 'active' : '') + '">' + esc(I18N.pick(d.en, d.ar)) + '</button>';
     }).join('');
   }
-  function renderLists() {
-    $('custList').innerHTML = S().customers.map(function (c) { return '<option value="' + esc(c.name) + '">'; }).join('');
-    $('portList').innerHTML = Catalog.PORTS.map(function (p) { return '<option value="' + esc(I18N.pick(p.en, p.ar)) + '">'; }).join('');
-  }
   function renderCats() {
     var html = '<button type="button" data-cat="all" class="' + (curCat === 'all' ? 'active' : '') + '">' + esc(t('all')) + '</button>';
     Catalog.CATS.forEach(function (c) {
-      html += '<button type="button" data-cat="' + c.id + '" class="' + (curCat === c.id ? 'active' : '') + '">' + c.ic + ' ' + esc(I18N.pick(c.en, c.ar)) + '</button>';
+      html += '<button type="button" data-cat="' + esc(c.id) + '" class="' + (curCat === c.id ? 'active' : '') + '">' + c.ic + ' ' + esc(I18N.pick(c.en, c.ar)) + '</button>';
     });
     $('nvCats').innerHTML = html;
   }
@@ -119,9 +116,9 @@
   function openCustom() {
     $('clName').value = ''; $('clAmount').value = ''; $('clQty').value = '1'; $('clOb').checked = false; $('clErr').textContent = '';
     $('clCat').innerHTML = Catalog.CATS.map(function (c) {
-      return '<option value="' + c.id + '"' + (c.id === 'other' ? ' selected' : '') + '>' + esc(I18N.pick(c.en, c.ar)) + '</option>';
+      return '<option value="' + esc(c.id) + '"' + (c.id === 'other' ? ' selected' : '') + '>' + esc(I18N.pick(c.en, c.ar)) + '</option>';
     }).join('');
-    $('clUnit').innerHTML = Catalog.UNITS.map(function (u) { return '<option value="' + u.id + '">' + esc(I18N.pick(u.en, u.ar)) + '</option>'; }).join('');
+    $('clUnit').innerHTML = Catalog.UNITS.map(function (u) { return '<option value="' + esc(u.id) + '">' + esc(I18N.pick(u.en, u.ar)) + '</option>'; }).join('');
     App.openModal('customModal');
     setTimeout(function () { $('clName').focus(); }, 50);
   }
@@ -178,6 +175,9 @@
     if (S().settings.vatOn && !S().settings.vatNo) { toast(t('err_vat_no'), 'bad'); return; }
 
     var inv = build();
+    var fp = JSON.stringify([inv.items, inv.customerName, inv.customerPhone, inv.declNo, inv.date, inv.total, inv.payments, inv.discount, inv.note]);
+    if (!saveKey || fp !== saveFp) { saveKey = uid('k'); saveFp = fp; }     // edited since the failed attempt = a different bill
+    inv.clientKey = saveKey;
     var needCust = !custId && $('nvName').value.trim() && $('nvSaveCust').checked;
     saving = true; setBusy(true);
     var chain = Promise.resolve();
@@ -186,6 +186,7 @@
       chain = Store.saveCustomer(c).then(function () { inv.customerId = c.id; });
     }
     chain.then(function () { return Store.createInvoice(inv); }).then(function (saved) {
+      saveKey = null; saveFp = '';
       toast(t('invoice_saved', { no: saved.number }));
       reset(true);
       App.updateBadge();
@@ -197,7 +198,7 @@
 
   function reset(silent) {
     if (!silent && cart.length && !confirm(t('confirm_clear'))) return;
-    cart = []; custId = null; payTouched = false;
+    cart = []; custId = null; payTouched = false; saveKey = null; saveFp = '';
     ['nvName', 'nvPhone', 'nvCVat', 'nvAddr', 'nvDecl', 'nvRef', 'nvVeh', 'nvGoods', 'nvPort', 'nvNote'].forEach(function (id) { $(id).value = ''; });
     $('nvDisc').value = ''; $('nvCompany').checked = false; toggleCompany();
     $('nvSaveCust').checked = true; $('nvSaveCustWrap').style.display = 'none';
@@ -233,6 +234,9 @@
       row.querySelector('[data-lt]').textContent = f3(Calc.line(it));
       calc();
     });
+    // suggestion lists (our own, so they look right and can be scrolled with a normal scrollbar)
+    Combo.attach($('nvName'), function () { return S().customers.map(function (c) { return c.name; }); });
+    Combo.attach($('nvPort'), function () { return Catalog.PORTS.map(function (p) { return I18N.pick(p.en, p.ar); }); });
     $('nvName').addEventListener('input', matchCustomer);
     $('nvName').addEventListener('change', matchCustomer);
     $('nvCompany').addEventListener('change', toggleCompany);
@@ -249,7 +253,7 @@
   }
 
   function refresh() {
-    renderDir(); renderLists(); renderCats(); renderGrid(); renderCart();
+    renderDir(); renderCats(); renderGrid(); renderCart();
     $('nvDate').max = ymd();
   }
   function focusSearch() { $('nvSearch').focus(); }

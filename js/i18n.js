@@ -108,6 +108,7 @@
   add('err_no_items', 'Add at least one service', 'أضف خدمة واحدة على الأقل');
   add('err_enter_price', 'Enter the amount for: {name}', 'أدخل المبلغ للخدمة: {name}');
   add('err_vat_no', 'VAT is on but the VAT number is empty. Add it in Settings.', 'الضريبة مفعّلة لكن الرقم الضريبي فارغ. أضفه من الإعدادات.');
+  add('err_vat_pct', 'VAT % must be a number between 0 and 100', 'يجب أن تكون نسبة الضريبة رقماً بين 0 و 100');
   add('err_desc', 'Please write the description', 'الرجاء كتابة الوصف');
   add('err_amount', 'Enter a valid amount', 'أدخل مبلغاً صحيحاً');
   add('err_name', 'Please write the name', 'الرجاء كتابة الاسم');

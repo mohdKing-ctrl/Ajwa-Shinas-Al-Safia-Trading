@@ -52,6 +52,10 @@
     var map = { new: NewInvoice, invoices: Invoices, customers: Customers, services: Services, reports: Reports, settings: Settings };
     map[view].refresh();
     window.scrollTo(0, 0);
+    // Another device may have added bills: pick up the newest data when these screens are opened.
+    if (Store.isServer() && (view === 'invoices' || view === 'customers' || view === 'reports')) {
+      Store.reload().then(function () { if (current === view) { map[view].refresh(); updateBadge(); } }).catch(function () { /* keep showing what we have */ });
+    }
   }
   function updateTitle() {
     $('pgTitle').innerHTML = esc(t('pg_' + current)) + '<small>' + esc(t('pg_' + current + '_s')) + '</small>';
@@ -165,6 +169,24 @@
     });
 
     tick(); setInterval(tick, 1000);
+
+    // Login expired (left open overnight, etc.): back to the login page instead of a confusing error.
+    Store.hooks.authLost = function () {
+      if (!$('gate').hidden) return;
+      document.querySelectorAll('.modal').forEach(function (m) { m.hidden = true; });
+      showGate('login', t('e_not_logged_in'));
+    };
+    // Coming back to this tab (e.g. on the phone): refresh the numbers.
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible' && inited && $('gate').hidden && Store.isServer()) {
+        Store.reload().then(function () { refreshAll(); }).catch(function () { /* ignore */ });
+      }
+    });
+    // Safety net: any failure that slipped through is shown as a message, never silently ignored.
+    window.addEventListener('unhandledrejection', function (e) {
+      if (e && e.reason && e.reason.code === 'not_logged_in') return;
+      toast(errText(e && e.reason), 'bad');
+    });
 
     Store.boot().then(function (state) {
       if (state === 'ready') start();

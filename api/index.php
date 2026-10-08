@@ -71,6 +71,7 @@ function db(): PDO
         PRIMARY KEY (col, id))');
     $pdo->exec('CREATE TABLE IF NOT EXISTS meta (k TEXT PRIMARY KEY, v TEXT NOT NULL)');
     $pdo->exec('CREATE TABLE IF NOT EXISTS attempts (ip TEXT NOT NULL, ts INTEGER NOT NULL)');
+    $pdo->exec('CREATE TABLE IF NOT EXISTS idem (k TEXT PRIMARY KEY, id TEXT NOT NULL, ts INTEGER NOT NULL)');
     return $pdo;
 }
 
@@ -333,9 +334,23 @@ switch ($action) {
         if (!is_array($doc) || !is_array($doc['items'] ?? null) || count($doc['items']) < 1) fail('bad_doc');
         if (strlen(json_encode($doc, JSON_UNESCAPED_UNICODE)) > MAX_DOC) fail('doc_too_large', 413);
 
+        // A retry of the same save (slow connection, double tap) carries the same key: hand back the bill that
+        // was already created instead of making a second one with a new number.
+        $key = isset($doc['clientKey']) && is_string($doc['clientKey']) && preg_match('/^[A-Za-z0-9_-]{8,80}$/', $doc['clientKey']) ? $doc['clientKey'] : null;
+        unset($doc['clientKey']);
+
         $pdo = db();
         $pdo->exec('BEGIN IMMEDIATE');
         try {
+            if ($key !== null) {
+                $st = $pdo->prepare('SELECT id FROM idem WHERE k = ?');
+                $st->execute([$key]);
+                $prev = $st->fetchColumn();
+                if ($prev !== false) {
+                    $old = get_doc('invoices', (string)$prev);
+                    if ($old) { $pdo->exec('COMMIT'); out(['ok' => true, 'doc' => $old, 'counter' => (int)meta_get('counter', '0'), 'duplicate' => true]); }
+                }
+            }
             $n = (int)meta_get('counter', '0') + 1;
             meta_set('counter', (string)$n);
             $doc['no']        = $n;
@@ -344,6 +359,10 @@ switch ($action) {
             $doc['created']   = time();
             $doc['createdBy'] = $user['name'];
             save_doc('invoices', $doc['id'], $doc);
+            if ($key !== null) {
+                $pdo->prepare('INSERT INTO idem (k, id, ts) VALUES (?, ?, ?)')->execute([$key, $doc['id'], time()]);
+                $pdo->prepare('DELETE FROM idem WHERE ts < ?')->execute([time() - 86400 * 14]);
+            }
             $pdo->exec('COMMIT');
         } catch (Throwable $e) {
             $pdo->exec('ROLLBACK');

@@ -10,7 +10,7 @@
     var q = $('svSearch').value.toLowerCase().trim();
     var pills = '<button type="button" data-cat="all" class="' + (catFilter === 'all' ? 'active' : '') + '">' + esc(t('all')) + '</button>' +
       Catalog.CATS.map(function (c) {
-        return '<button type="button" data-cat="' + c.id + '" class="' + (catFilter === c.id ? 'active' : '') + '">' + c.ic + ' ' + esc(I18N.pick(c.en, c.ar)) + '</button>';
+        return '<button type="button" data-cat="' + esc(c.id) + '" class="' + (catFilter === c.id ? 'active' : '') + '">' + c.ic + ' ' + esc(I18N.pick(c.en, c.ar)) + '</button>';
       }).join('');
     $('svCats').innerHTML = pills;
 

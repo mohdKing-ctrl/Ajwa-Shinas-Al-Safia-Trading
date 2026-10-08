@@ -28,7 +28,7 @@
       var p = Calc.paid(i);
       out.billed += i.total; out.behalf += i.behalf || 0; out.vat += i.vat || 0; out.disc += i.discount || 0;
       out.base += (i.office || 0) - (i.discount || 0); out.paid += p;
-      i.items.forEach(function (it) { out.cats[it.cat] = (out.cats[it.cat] || 0) + Calc.line(it); });
+      i.items.forEach(function (it) { var cid = Catalog.cat(it.cat).id; out.cats[cid] = (out.cats[cid] || 0) + Calc.line(it); });
       var key = i.customerId || i.customerName;
       var c = out.custs[key] || (out.custs[key] = { name: i.customerName, n: 0, billed: 0, paid: 0 });
       c.n++; c.billed += i.total; c.paid += p;

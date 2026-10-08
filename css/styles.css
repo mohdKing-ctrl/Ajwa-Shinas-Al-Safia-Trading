@@ -153,7 +153,7 @@ input[type=number]{font-variant-numeric:tabular-nums}
 
 /* ---------- invoice panel ---------- */
 .panel{position:sticky;top:90px;max-height:calc(100vh - 108px);overflow-y:auto;overscroll-behavior:contain;
-  padding-inline-end:6px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+  padding-inline-end:6px}
 @media(max-width:1180px){.panel{position:static;max-height:none;overflow:visible;padding:0}}
 .cartbox{margin:0 0 14px;border:1.5px dashed var(--line);border-radius:14px;padding:6px}
 .ci{display:grid;grid-template-columns:1fr auto;gap:8px 10px;align-items:center;padding:10px;border-radius:11px;font-size:13.5px}
@@ -426,3 +426,27 @@ tr.selected{background:var(--badsoft) !important}
 /* clear-filters button: quiet normally, gold while a filter is active */
 #ivReset{border:1.5px solid var(--line);font-weight:800}
 #ivReset.hasfilter{background:var(--goldsoft);color:var(--goldtxt);border-color:var(--gold)}
+
+/* ---------- scrollbars: always a visible light track with a grey handle (never a transparent/black one) ---------- */
+html{scrollbar-color:var(--faint) var(--bg)}
+.panel,aside,.tblwrap,.mbox,.cols,#gate{scrollbar-width:thin;scrollbar-color:var(--faint) var(--surface2)}
+@supports not (scrollbar-color:auto){
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:var(--surface2)}
+  ::-webkit-scrollbar-thumb{background:var(--faint);border-radius:8px;border:2px solid var(--surface2)}
+  ::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+}
+
+/* ---------- suggestion list under text boxes (customer, border / port) ---------- */
+.combo-wrap{position:relative}
+.combo-list{position:absolute;inset-inline:0;top:100%;margin-top:4px;z-index:80;background:var(--surface);
+  border:1.5px solid var(--brand);border-radius:12px;box-shadow:var(--shadow2);max-height:224px;overflow-y:auto;
+  scrollbar-width:thin;scrollbar-color:var(--faint) var(--surface2)}
+.combo-item{padding:10px 14px;font-size:14px;font-weight:600;cursor:pointer;color:var(--txt)}
+.combo-item + .combo-item{border-top:1px solid var(--line)}
+.combo-item:hover,.combo-item.on{background:var(--brandsoft);color:var(--brandtxt)}
+
+/* printing: keep each invoice line in one piece, repeat the column titles on a second page */
+.inv tr,.rc tr{page-break-inside:avoid;break-inside:avoid}
+.inv thead{display:table-header-group}
+.inv .bottom,.inv .sign,.inv .box{page-break-inside:avoid;break-inside:avoid}

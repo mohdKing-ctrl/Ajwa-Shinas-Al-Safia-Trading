@@ -30,6 +30,7 @@
     d.prefix = (d.prefix || 'INV').replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 8) || 'INV';
     if (!d.name) { toast(t('err_name'), 'bad'); return; }
     if (d.vatOn && !d.vatNo) { toast(t('err_vat_no'), 'bad'); return; }
+    if (d.vatOn && !(d.vatPct > 0 && d.vatPct <= 100)) { toast(t('err_vat_pct'), 'bad'); return; }
     busy = true;
     Store.saveSettings(d).then(function () { toast(t('saved')); App.applyBranding(); NewInvoice.refresh(); fill(); })
       .catch(function (e) { toast(App.errText(e), 'bad'); }).then(function () { busy = false; });

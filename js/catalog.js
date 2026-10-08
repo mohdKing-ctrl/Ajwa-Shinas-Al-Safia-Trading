@@ -48,7 +48,7 @@
   ];
 
   var PORTS = [
-    { en: 'Shinas Border', ar: 'منفذ شناص الحدودي' },
+    { en: 'Al Wajajah Land Border', ar: 'منفذ الوجاجة البري' },
     { en: 'Khatmat Malaha Border', ar: 'منفذ خطمة ملاحة' },
     { en: 'Sohar Port', ar: 'ميناء صحار' },
     { en: 'Sohar Free Zone', ar: 'المنطقة الحرة بصحار' },
@@ -139,21 +139,21 @@
   function rng(seed) { return function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
 
   var TEMPLATES = [
-    { cust: 'c2', dir: 'import', goods: 'Frozen chicken - 1 container', port: 'Shinas Border', veh: 'CNT: MSKU 482910-3',
+    { cust: 'c2', dir: 'import', goods: 'Frozen chicken - 1 container', port: 'منفذ الوجاجة البري', veh: 'CNT: MSKU 482910-3',
       lines: [['s1', 15, 1], ['s6', 142.5, 1], ['s11', 8, 1], ['s12', 15, 1], ['s16', 20, 1], ['s20', 2, 1]] },
-    { cust: 'c1', dir: 'import', goods: 'Ceramic tiles - 24 tons', port: 'Shinas Border', veh: 'Truck: 4521 Q (UAE)',
+    { cust: 'c1', dir: 'import', goods: 'Ceramic tiles - 24 tons', port: 'منفذ الوجاجة البري', veh: 'Truck: 4521 Q (UAE)',
       lines: [['s1', 15, 1], ['s6', 96, 1], ['s20', 2, 1], ['s21', 0.5, 24], ['s22', 1, 1], ['s16', 20, 1]] },
-    { cust: 'c3', dir: 'import', goods: 'Steel bars - 2 trucks', port: 'Khatmat Malaha Border', veh: 'Trucks: 7731 A, 7732 A',
+    { cust: 'c3', dir: 'import', goods: 'Steel bars - 2 trucks', port: 'منفذ خطمة ملاحة', veh: 'Trucks: 7731 A, 7732 A',
       lines: [['s1', 15, 2], ['s6', 210, 1], ['s20', 2, 2], ['s21', 0.5, 48], ['s15', 120, 2], ['s31', 2, 1]] },
-    { cust: 'c4', dir: 'import', goods: 'Used auto spare parts', port: 'Shinas Border', veh: 'Truck: 9004 K (UAE)',
+    { cust: 'c4', dir: 'import', goods: 'Used auto spare parts', port: 'منفذ الوجاجة البري', veh: 'Truck: 9004 K (UAE)',
       lines: [['s1', 15, 1], ['s6', 64.25, 1], ['s8', 5, 1], ['s4', 3, 1]] },
-    { cust: 'c2', dir: 'import', goods: 'Dairy products - 1 truck', port: 'Shinas Border', veh: 'Truck: 1188 B (UAE)',
+    { cust: 'c2', dir: 'import', goods: 'Dairy products - 1 truck', port: 'منفذ الوجاجة البري', veh: 'Truck: 1188 B (UAE)',
       lines: [['s1', 15, 1], ['s6', 78, 1], ['s11', 8, 1], ['s13', 5, 1], ['s20', 2, 1], ['s22', 1, 1]] },
-    { cust: 'c5', dir: 'export', goods: 'Used vehicle to UAE', port: 'Shinas Border', veh: 'Toyota Land Cruiser',
+    { cust: 'c5', dir: 'export', goods: 'Used vehicle to UAE', port: 'منفذ الوجاجة البري', veh: 'Toyota Land Cruiser',
       lines: [['s1', 15, 1], ['s26', 3, 1], ['s4', 3, 1]] },
-    { cust: 'c1', dir: 'transit', goods: 'Electrical cables - transit to Saudi', port: 'Khatmat Malaha Border', veh: 'Truck: 6620 D',
+    { cust: 'c1', dir: 'transit', goods: 'Electrical cables - transit to Saudi', port: 'منفذ خطمة ملاحة', veh: 'Truck: 6620 D',
       lines: [['s3', 10, 1], ['s10', 3, 1], ['s9', 100, 1], ['s19', 10, 1], ['s20', 2, 1]] },
-    { cust: 'c3', dir: 'import', goods: 'Cement - 30 tons', port: 'Shinas Border', veh: 'Truck: 3310 Q',
+    { cust: 'c3', dir: 'import', goods: 'Cement - 30 tons', port: 'منفذ الوجاجة البري', veh: 'Truck: 3310 Q',
       lines: [['s1', 15, 1], ['s6', 88, 1], ['s20', 2, 1], ['s21', 0.5, 30], ['s16', 20, 1], ['s18', 5, 3]] }
   ];
 

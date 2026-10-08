@@ -80,7 +80,7 @@
         <div class="card">
           <div class="chead"><h3><span class="step">1</span> <span data-i18n="step_customer"></span></h3><span class="chip c-mut" id="nvNo"></span></div>
           <div class="fields">
-            <div class="fld"><label data-i18n="customer_name"></label><input id="nvName" list="custList" autocomplete="off" data-i18n-ph="walk_in"></div>
+            <div class="fld"><label data-i18n="customer_name"></label><input id="nvName" autocomplete="off" data-i18n-ph="walk_in"></div>
             <div class="fld"><label data-i18n="phone"></label><input id="nvPhone" class="ltr-in" inputmode="tel" placeholder="9xxx xxxx" dir="ltr" style="text-align:start"></div>
           </div>
           <label class="switch"><input type="checkbox" id="nvCompany"> <span data-i18n="company_invoice"></span></label>
@@ -96,7 +96,7 @@
             <div class="fld"><label data-i18n="decl_no"></label><input id="nvDecl" dir="ltr" style="text-align:start" placeholder="2xxxxxxx"></div>
             <div class="fld"><label data-i18n="ref_no"></label><input id="nvRef" dir="ltr" style="text-align:start" placeholder="BL / AWB"></div>
             <div class="fld"><label data-i18n="vehicle"></label><input id="nvVeh" dir="ltr" style="text-align:start"></div>
-            <div class="fld"><label data-i18n="port"></label><input id="nvPort" list="portList" autocomplete="off"></div>
+            <div class="fld"><label data-i18n="port"></label><input id="nvPort" autocomplete="off"></div>
             <div class="fld"><label data-i18n="goods"></label><input id="nvGoods"></div>
             <div class="fld"><label data-i18n="date"></label><input type="date" id="nvDate"></div>
           </div>
@@ -366,8 +366,6 @@
   <button class="btn b-soft" type="button" data-close style="margin-top:16px" data-i18n="close"></button>
 </div></div>
 
-<datalist id="custList"></datalist>
-<datalist id="portList"></datalist>
 <div class="toast" id="toast"></div>
 <div id="printArea"></div>
 
@@ -377,6 +375,7 @@
 <script src="js/xlsx.js"></script>
 <script src="js/store.js"></script>
 <script src="js/print.js"></script>
+<script src="js/combo.js"></script>
 <script src="js/invoice.js"></script>
 <script src="js/invoices.js"></script>
 <script src="js/customers.js"></script>
